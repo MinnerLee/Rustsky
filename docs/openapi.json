@@ -1,0 +1,6637 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Rustsky 接口文档",
+    "description": "通过本地 Nginx 访问 Rustsky 的管理端和用户端接口。",
+    "license": {
+      "name": ""
+    },
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "当前 Nginx 入口"
+    }
+  ],
+  "paths": {
+    "/api/category": {
+      "put": {
+        "tags": [
+          "分类"
+        ],
+        "summary": "修改分类",
+        "operationId": "edit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "保存结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "分类"
+        ],
+        "summary": "新增分类",
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "保存结果，新分类默认禁用。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "分类"
+        ],
+        "summary": "删除未被使用的分类",
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/category/list": {
+      "get": {
+        "tags": [
+          "分类"
+        ],
+        "summary": "查询已启用分类",
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "已启用分类。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Vec_Category"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/category/page": {
+      "get": {
+        "tags": [
+          "分类"
+        ],
+        "summary": "分类分页查询",
+        "operationId": "page",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "分类分页结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_CategoryPage"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/category/status/{status}": {
+      "post": {
+        "tags": [
+          "分类"
+        ],
+        "summary": "启用或禁用分类",
+        "operationId": "set_status",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "状态保存结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/common/upload": {
+      "post": {
+        "tags": [
+          "菜品"
+        ],
+        "summary": "上传菜品图片",
+        "operationId": "upload",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageUpload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "图片访问路径。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_String"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/dish": {
+      "put": {
+        "tags": [
+          "菜品"
+        ],
+        "summary": "修改菜品及口味",
+        "operationId": "edit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DishInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "保存结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "菜品"
+        ],
+        "summary": "新增菜品及口味",
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DishInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "保存结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "菜品"
+        ],
+        "summary": "删除停售且未被套餐引用的菜品",
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/dish/list": {
+      "get": {
+        "tags": [
+          "菜品"
+        ],
+        "summary": "获取起售菜品",
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "起售菜品。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Vec_Dish"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/dish/page": {
+      "get": {
+        "tags": [
+          "菜品"
+        ],
+        "summary": "菜品分页查询",
+        "operationId": "page",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "分页结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_DishPage"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/dish/status/{status}": {
+      "post": {
+        "tags": [
+          "菜品"
+        ],
+        "summary": "起售或停售菜品",
+        "operationId": "set_status",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "状态保存结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/dish/{id}": {
+      "get": {
+        "tags": [
+          "菜品"
+        ],
+        "summary": "回显菜品与口味",
+        "operationId": "details",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "菜品详情。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_DishDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/employee": {
+      "put": {
+        "tags": [
+          "员工"
+        ],
+        "summary": "修改员工资料",
+        "operationId": "edit_employee",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditEmployeeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "资料保存结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "资料格式不正确。"
+          },
+          "401": {
+            "description": "令牌无效。"
+          },
+          "403": {
+            "description": "需要管理员。"
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "员工"
+        ],
+        "summary": "新增员工",
+        "description": "仅启用的管理员 admin 可新增。账号和工号唯一，初始密码以 Argon2id 哈希保存。",
+        "operationId": "createEmployee",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEmployeeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "code=1 返回员工 ID 和保存的工号。账号或工号冲突时 code=0。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateEmployeeOutcome"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求格式或字段不符合要求。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "登录令牌缺失或无效。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "当前账号无权新增员工。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "请求体超过 8 KiB。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "无法生成密码哈希。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "数据库暂不可用。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/employee/login": {
+      "post": {
+        "tags": [
+          "员工"
+        ],
+        "summary": "员工登录",
+        "operationId": "employeeLogin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "code=1 时返回员工信息和 JWT，code=0 时表示凭证无效或账号禁用。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginOutcome"
+                },
+                "examples": {
+                  "密码错误": {
+                    "value": {
+                      "code": 0,
+                      "data": null,
+                      "msg": "用户名或密码错误"
+                    }
+                  },
+                  "成功": {
+                    "value": {
+                      "code": 1,
+                      "data": {
+                        "id": 10,
+                        "name": "本地管理员",
+                        "token": "<jwt>",
+                        "userName": "admin"
+                      },
+                      "msg": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求格式或字段长度错误。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "请求体超过 8 KiB。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "令牌签发失败。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "登录未配置或数据库暂不可用。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/employee/logout": {
+      "post": {
+        "tags": [
+          "员工"
+        ],
+        "summary": "员工退出",
+        "description": "验证令牌后由前端清除本地登录信息。已签发的 JWT 可以使用到有效期结束。",
+        "operationId": "employeeLogout",
+        "responses": {
+          "200": {
+            "description": "退出成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                },
+                "example": {
+                  "code": 1,
+                  "data": null,
+                  "msg": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "令牌缺失、无效或过期。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                },
+                "example": {
+                  "code": 0,
+                  "data": null,
+                  "msg": "登录已失效，请重新登录"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/employee/page": {
+      "get": {
+        "tags": [
+          "员工"
+        ],
+        "summary": "员工分页查询",
+        "description": "启用的管理员可按姓名搜索员工，结果按最近修改时间和员工 ID 降序排列。",
+        "operationId": "listEmployees",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "从 1 开始。省略时取第 1 页。",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "每页 1 至 100 条，默认 10 条。",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10,
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "按姓名包含的文字筛选，留空时查询全部。",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 32
+            },
+            "example": "张"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回匹配总数及当前页记录。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_EmployeePage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "分页参数不正确。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "令牌缺失、无效或过期。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "当前账号无权查询员工。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "数据库暂不可用。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/employee/status/{status}": {
+      "post": {
+        "tags": [
+          "员工"
+        ],
+        "summary": "启用或禁用员工",
+        "operationId": "set_employee_status",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "path",
+            "description": "0 禁用，1 启用",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "员工 ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "状态保存结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "状态或 ID 不正确。"
+          },
+          "401": {
+            "description": "令牌无效。"
+          },
+          "403": {
+            "description": "需要管理员。"
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/employee/{id}": {
+      "get": {
+        "tags": [
+          "员工"
+        ],
+        "summary": "查询员工资料",
+        "operationId": "employee_details",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "员工 ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "员工资料，或员工不存在。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_EmployeeDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "令牌无效。"
+          },
+          "403": {
+            "description": "需要管理员。"
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/order/cancel": {
+      "put": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "管理端取消订单",
+        "operationId": "admin_cancel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cancellation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "取消结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/order/complete/{id}": {
+      "put": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "完成订单",
+        "operationId": "complete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "完成结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/order/conditionSearch": {
+      "get": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "管理端按条件分页查订单",
+        "operationId": "admin_page",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "number",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phone",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "beginTime",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "订单分页。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_OrderPage"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/order/confirm": {
+      "put": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "接单",
+        "operationId": "confirm",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "接单结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/order/delivery/{id}": {
+      "put": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "开始派送",
+        "operationId": "delivery",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "派送结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/order/details/{id}": {
+      "get": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "管理端查看订单详情",
+        "operationId": "admin_details",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "订单详情。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_OrderView"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/order/rejection": {
+      "put": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "管理端拒接待接单订单",
+        "operationId": "reject",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Rejection"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "拒单结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/order/statistics": {
+      "get": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "查询待接单、待派送和派送中数量",
+        "operationId": "counts",
+        "responses": {
+          "200": {
+            "description": "订单状态数量。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Counts"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/report/dataOverView": {
+      "get": {
+        "tags": [
+          "统计"
+        ],
+        "summary": "查询指定日期内的经营概览",
+        "operationId": "overview",
+        "parameters": [
+          {
+            "name": "begin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "经营概览。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Overview"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/report/export": {
+      "get": {
+        "tags": [
+          "统计"
+        ],
+        "summary": "导出运营数据 Excel，默认最近 30 个完整自然日",
+        "operationId": "export",
+        "parameters": [
+          {
+            "name": "begin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "运营数据 Excel 文件。",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/report/ordersStatistics": {
+      "get": {
+        "tags": [
+          "统计"
+        ],
+        "summary": "查询订单数和完成率",
+        "operationId": "orders",
+        "parameters": [
+          {
+            "name": "begin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "日期、订单数、有效订单数和完成率。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Orders"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/report/top10": {
+      "get": {
+        "tags": [
+          "统计"
+        ],
+        "summary": "查询已完成订单中的销量前十",
+        "operationId": "top",
+        "parameters": [
+          {
+            "name": "begin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "按销量排序的商品。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Top"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/report/turnoverStatistics": {
+      "get": {
+        "tags": [
+          "统计"
+        ],
+        "summary": "查询每日营业额",
+        "operationId": "turnover",
+        "parameters": [
+          {
+            "name": "begin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "日期和营业额序列。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Turnover"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/report/userStatistics": {
+      "get": {
+        "tags": [
+          "统计"
+        ],
+        "summary": "查询每日新增用户和累计用户",
+        "operationId": "users",
+        "parameters": [
+          {
+            "name": "begin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "日期和用户序列。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Users"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/setmeal": {
+      "put": {
+        "tags": [
+          "套餐"
+        ],
+        "summary": "修改套餐",
+        "operationId": "edit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MealInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "修改结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "套餐"
+        ],
+        "summary": "新增套餐",
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MealInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "新增结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "套餐"
+        ],
+        "summary": "删除停售套餐",
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/setmeal/page": {
+      "get": {
+        "tags": [
+          "套餐"
+        ],
+        "summary": "套餐分页查询",
+        "operationId": "page",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "套餐分页结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_MealPage"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/setmeal/status/{status}": {
+      "post": {
+        "tags": [
+          "套餐"
+        ],
+        "summary": "起售或停售套餐",
+        "operationId": "set_status",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "状态保存结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/setmeal/{id}": {
+      "get": {
+        "tags": [
+          "套餐"
+        ],
+        "summary": "回显套餐和所含菜品",
+        "operationId": "details",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "套餐详情。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_MealDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/shop/status": {
+      "get": {
+        "tags": [
+          "店铺"
+        ],
+        "summary": "查询店铺营业状态",
+        "operationId": "admin_status",
+        "responses": {
+          "200": {
+            "description": "0 打烊，1 营业。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_i32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/shop/{status}": {
+      "put": {
+        "tags": [
+          "店铺"
+        ],
+        "summary": "设置店铺营业状态",
+        "operationId": "set_status",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "path",
+            "description": "0 打烊，1 营业",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "状态保存结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/workspace/businessData": {
+      "get": {
+        "tags": [
+          "统计"
+        ],
+        "summary": "工作台今日经营概览",
+        "operationId": "business",
+        "responses": {
+          "200": {
+            "description": "经营概览。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Overview"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/workspace/overviewDishes": {
+      "get": {
+        "tags": [
+          "统计"
+        ],
+        "summary": "工作台菜品状态概览",
+        "operationId": "workspace_dishes",
+        "responses": {
+          "200": {
+            "description": "起售和停售数量。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_CatalogCounts"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/workspace/overviewOrders": {
+      "get": {
+        "tags": [
+          "统计"
+        ],
+        "summary": "工作台今日订单概览",
+        "operationId": "workspace_orders",
+        "responses": {
+          "200": {
+            "description": "今日各状态订单数。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_WorkspaceOrders"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/api/workspace/overviewSetmeals": {
+      "get": {
+        "tags": [
+          "统计"
+        ],
+        "summary": "工作台套餐状态概览",
+        "operationId": "workspace_setmeals",
+        "responses": {
+          "200": {
+            "description": "起售和停售数量。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_CatalogCounts"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EmployeeToken": []
+          }
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "运行状态"
+        ],
+        "summary": "检查 Rust 服务是否响应",
+        "operationId": "healthCheck",
+        "responses": {
+          "200": {
+            "description": "进程可以响应 HTTP 请求。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_String"
+                },
+                "example": {
+                  "code": 1,
+                  "data": "ok",
+                  "msg": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/notify/wechat/payment": {
+      "post": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "微信支付 V3 支付与退款通知",
+        "operationId": "notification",
+        "responses": {
+          "204": {
+            "description": "通知已入库"
+          },
+          "400": {
+            "description": "通知无效"
+          },
+          "503": {
+            "description": "暂时无法确认通知"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/user/addressBook": {
+      "put": {
+        "tags": [
+          "地址簿"
+        ],
+        "summary": "修改本人收货地址",
+        "operationId": "edit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "保存结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "地址簿"
+        ],
+        "summary": "新增收货地址",
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "保存结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "地址簿"
+        ],
+        "summary": "删除本人收货地址",
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/addressBook/default": {
+      "get": {
+        "tags": [
+          "地址簿"
+        ],
+        "summary": "查询本人的默认地址",
+        "operationId": "default_address",
+        "responses": {
+          "200": {
+            "description": "默认地址。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Address"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "地址簿"
+        ],
+        "summary": "设为默认收货地址",
+        "operationId": "set_default",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "保存结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/addressBook/list": {
+      "get": {
+        "tags": [
+          "地址簿"
+        ],
+        "summary": "查询本人地址",
+        "operationId": "list",
+        "responses": {
+          "200": {
+            "description": "地址列表。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Vec_Address"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/addressBook/{id}": {
+      "get": {
+        "tags": [
+          "地址簿"
+        ],
+        "summary": "查询一条本人地址",
+        "operationId": "details",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "地址详情。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Address"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/category/list": {
+      "get": {
+        "tags": [
+          "菜单"
+        ],
+        "summary": "查看启用的菜单分类",
+        "operationId": "categories",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "菜单分类。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Vec_MenuCategory"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/user/dish/list": {
+      "get": {
+        "tags": [
+          "菜单"
+        ],
+        "summary": "查看分类内在售菜品",
+        "operationId": "dishes",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "含口味的菜品列表。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Vec_MenuDish"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/user/order/cancel/{id}": {
+      "put": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "顾客取消自己的未发起付款或待接单订单",
+        "operationId": "customer_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取消结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/order/dev/payment": {
+      "put": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "本地模拟支付结果",
+        "operationId": "simulate_payment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "待付款订单进入待接单。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/order/historyOrders": {
+      "get": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "顾客查询自己的订单",
+        "operationId": "history",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "number",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phone",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "beginTime",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "订单分页。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_OrderPage"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/order/orderDetail/{id}": {
+      "get": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "顾客查看自己的订单详情",
+        "operationId": "customer_details",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "订单详情。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_OrderView"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/order/payment": {
+      "put": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "小程序预下单或本地模拟付款",
+        "operationId": "miniprogram_payment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "小程序收银台参数或模拟支付结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_PaymentResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/order/payment/{number}": {
+      "get": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "确认本人的付款状态",
+        "operationId": "status",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "支付状态",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_PaymentStatus"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/order/reminder/{id}": {
+      "get": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "顾客对自己的待接单订单催单",
+        "operationId": "remind",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "催单结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/order/repetition/{id}": {
+      "post": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "把历史订单的在售商品重新加入购物车",
+        "operationId": "repeat",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "加入结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/order/submit": {
+      "post": {
+        "tags": [
+          "订单"
+        ],
+        "summary": "提交购物车并生成待付款订单",
+        "operationId": "submit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "待付款订单编号、金额和时间。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_OrderReceipt"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/setmeal/dish/{id}": {
+      "get": {
+        "tags": [
+          "菜单"
+        ],
+        "summary": "查看套餐中的菜品和份数",
+        "operationId": "meal_dishes",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "套餐菜品列表。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Vec_MenuMealItem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/user/setmeal/list": {
+      "get": {
+        "tags": [
+          "菜单"
+        ],
+        "summary": "查看分类内在售套餐",
+        "operationId": "setmeals",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "套餐列表。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Vec_MenuSetmeal"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/user/shop/status": {
+      "get": {
+        "tags": [
+          "店铺"
+        ],
+        "summary": "用户端查看营业状态",
+        "operationId": "user_status",
+        "responses": {
+          "200": {
+            "description": "0 打烊，1 营业。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_i32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/user/shoppingCart/add": {
+      "post": {
+        "tags": [
+          "购物车"
+        ],
+        "summary": "添加一份菜品或套餐",
+        "operationId": "add",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "加入结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/shoppingCart/clean": {
+      "delete": {
+        "tags": [
+          "购物车"
+        ],
+        "summary": "清空自己的购物车",
+        "operationId": "clean",
+        "responses": {
+          "200": {
+            "description": "清空结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/shoppingCart/list": {
+      "get": {
+        "tags": [
+          "购物车"
+        ],
+        "summary": "查看自己的购物车",
+        "operationId": "list",
+        "responses": {
+          "200": {
+            "description": "购物车明细，amount 为加入时的商品单价。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_Vec_CartLine"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/shoppingCart/sub": {
+      "post": {
+        "tags": [
+          "购物车"
+        ],
+        "summary": "减少一份商品",
+        "operationId": "subtract",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "扣减结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_NoData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CustomerToken": []
+          }
+        ]
+      }
+    },
+    "/user/user/login": {
+      "post": {
+        "tags": [
+          "用户"
+        ],
+        "summary": "微信小程序用户登录",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerLogin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "用户标识和令牌。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult_CustomerSession"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Address": {
+        "type": "object",
+        "required": [
+          "id",
+          "consignee",
+          "sex",
+          "phone",
+          "provinceCode",
+          "provinceName",
+          "cityCode",
+          "cityName",
+          "districtCode",
+          "districtName",
+          "detail",
+          "label",
+          "isDefault"
+        ],
+        "properties": {
+          "cityCode": {
+            "type": "string"
+          },
+          "cityName": {
+            "type": "string"
+          },
+          "consignee": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "districtCode": {
+            "type": "string"
+          },
+          "districtName": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isDefault": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "label": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "provinceCode": {
+            "type": "string"
+          },
+          "provinceName": {
+            "type": "string"
+          },
+          "sex": {
+            "type": "string"
+          }
+        }
+      },
+      "AddressId": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "AddressInput": {
+        "type": "object",
+        "required": [
+          "consignee",
+          "phone",
+          "detail"
+        ],
+        "properties": {
+          "cityCode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "cityName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "consignee": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "districtCode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "districtName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "label": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "phone": {
+            "type": "string"
+          },
+          "provinceCode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "provinceName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sex": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "ApiResult_Address": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "consignee",
+              "sex",
+              "phone",
+              "provinceCode",
+              "provinceName",
+              "cityCode",
+              "cityName",
+              "districtCode",
+              "districtName",
+              "detail",
+              "label",
+              "isDefault"
+            ],
+            "properties": {
+              "cityCode": {
+                "type": "string"
+              },
+              "cityName": {
+                "type": "string"
+              },
+              "consignee": {
+                "type": "string"
+              },
+              "detail": {
+                "type": "string"
+              },
+              "districtCode": {
+                "type": "string"
+              },
+              "districtName": {
+                "type": "string"
+              },
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "isDefault": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "label": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "provinceCode": {
+                "type": "string"
+              },
+              "provinceName": {
+                "type": "string"
+              },
+              "sex": {
+                "type": "string"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_CatalogCounts": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "sold",
+              "discontinued"
+            ],
+            "properties": {
+              "discontinued": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "sold": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_CategoryPage": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "total",
+              "records"
+            ],
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              },
+              "total": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Counts": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "toBeConfirmed",
+              "confirmed",
+              "deliveryInProgress"
+            ],
+            "properties": {
+              "confirmed": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "deliveryInProgress": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "toBeConfirmed": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_CreatedEmployee": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "employeeNo"
+            ],
+            "properties": {
+              "employeeNo": {
+                "type": "string"
+              },
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_CustomerSession": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "openid",
+              "token"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "openid": {
+                "type": "string"
+              },
+              "token": {
+                "type": "string"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_DishDetails": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Dish"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "flavors"
+                ],
+                "properties": {
+                  "flavors": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Flavor"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_DishPage": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "total",
+              "records"
+            ],
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Dish"
+                }
+              },
+              "total": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_EmployeeDetails": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "username",
+              "name",
+              "phone",
+              "sex",
+              "idNumber",
+              "status"
+            ],
+            "properties": {
+              "employeeNo": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "idNumber": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "sex": {
+                "type": "string"
+              },
+              "status": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "username": {
+                "type": "string"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_EmployeePage": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "total",
+              "records"
+            ],
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EmployeeListRow"
+                }
+              },
+              "total": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_LoginResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "userName",
+              "name",
+              "token"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
+              },
+              "name": {
+                "type": "string"
+              },
+              "token": {
+                "type": "string",
+                "description": "有效期为一小时的员工 JWT。"
+              },
+              "userName": {
+                "type": "string"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_MealDetails": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Setmeal"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "setmealDishes"
+                ],
+                "properties": {
+                  "setmealDishes": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MealDish"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_MealPage": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "total",
+              "records"
+            ],
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Setmeal"
+                }
+              },
+              "total": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_NoData": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "null"
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_OrderPage": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "total",
+              "records"
+            ],
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrderView"
+                }
+              },
+              "total": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_OrderReceipt": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "orderNumber",
+              "orderAmount",
+              "orderTime"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "orderAmount": {
+                "type": "number",
+                "format": "double"
+              },
+              "orderNumber": {
+                "type": "string"
+              },
+              "orderTime": {
+                "type": "string"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_OrderView": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "number",
+              "status",
+              "payStatus",
+              "payMethod",
+              "amount",
+              "consignee",
+              "phone",
+              "address",
+              "remark",
+              "orderTime",
+              "cancelReason",
+              "rejectionReason",
+              "packAmount",
+              "orderDishes",
+              "orderDetailList"
+            ],
+            "properties": {
+              "address": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "number",
+                "format": "double"
+              },
+              "cancelReason": {
+                "type": "string"
+              },
+              "checkoutTime": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "consignee": {
+                "type": "string"
+              },
+              "deliveryTime": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "estimatedDeliveryTime": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "number": {
+                "type": "string"
+              },
+              "orderDetailList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrderItem"
+                }
+              },
+              "orderDishes": {
+                "type": "string"
+              },
+              "orderTime": {
+                "type": "string"
+              },
+              "packAmount": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "payMethod": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "payStatus": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "refundState": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rejectionReason": {
+                "type": "string"
+              },
+              "remark": {
+                "type": "string"
+              },
+              "status": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Orders": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "dateList",
+              "orderCountList",
+              "validOrderCountList",
+              "totalOrderCount",
+              "validOrderCount",
+              "orderCompletionRate"
+            ],
+            "properties": {
+              "dateList": {
+                "type": "string"
+              },
+              "orderCompletionRate": {
+                "type": "number",
+                "format": "double"
+              },
+              "orderCountList": {
+                "type": "string"
+              },
+              "totalOrderCount": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "validOrderCount": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "validOrderCountList": {
+                "type": "string"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Overview": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "turnover",
+              "validOrderCount",
+              "orderCompletionRate",
+              "unitPrice",
+              "newUsers",
+              "totalUsers"
+            ],
+            "properties": {
+              "newUsers": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "orderCompletionRate": {
+                "type": "number",
+                "format": "double"
+              },
+              "totalUsers": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "turnover": {
+                "type": "number",
+                "format": "double"
+              },
+              "unitPrice": {
+                "type": "number",
+                "format": "double"
+              },
+              "validOrderCount": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_PaymentResult": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "simulated"
+                ],
+                "properties": {
+                  "simulated": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/schemas/MiniPayment"
+              }
+            ]
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_PaymentStatus": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "payStatus"
+            ],
+            "properties": {
+              "payStatus": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_String": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "string"
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Top": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "nameList",
+              "numberList",
+              "names",
+              "quantities"
+            ],
+            "properties": {
+              "nameList": {
+                "type": "string"
+              },
+              "names": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "numberList": {
+                "type": "string"
+              },
+              "quantities": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Turnover": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "dateList",
+              "turnoverList"
+            ],
+            "properties": {
+              "dateList": {
+                "type": "string"
+              },
+              "turnoverList": {
+                "type": "string"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Users": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "dateList",
+              "totalUserList",
+              "newUserList"
+            ],
+            "properties": {
+              "dateList": {
+                "type": "string"
+              },
+              "newUserList": {
+                "type": "string"
+              },
+              "totalUserList": {
+                "type": "string"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Vec_Address": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "consignee",
+                "sex",
+                "phone",
+                "provinceCode",
+                "provinceName",
+                "cityCode",
+                "cityName",
+                "districtCode",
+                "districtName",
+                "detail",
+                "label",
+                "isDefault"
+              ],
+              "properties": {
+                "cityCode": {
+                  "type": "string"
+                },
+                "cityName": {
+                  "type": "string"
+                },
+                "consignee": {
+                  "type": "string"
+                },
+                "detail": {
+                  "type": "string"
+                },
+                "districtCode": {
+                  "type": "string"
+                },
+                "districtName": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "isDefault": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                },
+                "provinceCode": {
+                  "type": "string"
+                },
+                "provinceName": {
+                  "type": "string"
+                },
+                "sex": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Vec_CartLine": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "name",
+                "image",
+                "dishFlavor",
+                "number",
+                "amount"
+              ],
+              "properties": {
+                "amount": {
+                  "type": "number",
+                  "format": "double"
+                },
+                "dishFlavor": {
+                  "type": "string"
+                },
+                "dishId": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "int64"
+                },
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "image": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "setmealId": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "int64"
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Vec_Category": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "name",
+                "sort"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "sort": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "status": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "int32"
+                },
+                "type": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "int32"
+                },
+                "updateTime": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Vec_Dish": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "name",
+                "categoryId",
+                "price",
+                "image",
+                "description",
+                "status"
+              ],
+              "properties": {
+                "categoryId": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "categoryName": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "description": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "image": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "number",
+                  "format": "double"
+                },
+                "status": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "updateTime": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Vec_MenuCategory": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "name",
+                "type",
+                "sort"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "sort": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "type": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Vec_MenuDish": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "name",
+                "categoryId",
+                "price",
+                "image",
+                "description",
+                "flavors"
+              ],
+              "properties": {
+                "categoryId": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "flavors": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuFlavor"
+                  }
+                },
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "image": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Vec_MenuMealItem": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "image",
+                "description",
+                "copies"
+              ],
+              "properties": {
+                "copies": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "image": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_Vec_MenuSetmeal": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "name",
+                "categoryId",
+                "price",
+                "image",
+                "description"
+              ],
+              "properties": {
+                "categoryId": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "image": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_WorkspaceOrders": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "waitingOrders",
+              "deliveredOrders",
+              "completedOrders",
+              "cancelledOrders",
+              "allOrders"
+            ],
+            "properties": {
+              "allOrders": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "cancelledOrders": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "completedOrders": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "deliveredOrders": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "waitingOrders": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "ApiResult_i32": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "业务结果。1 表示成功，0 表示失败。",
+            "minimum": 0
+          },
+          "data": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "失败原因，成功时为 null。"
+          }
+        }
+      },
+      "Cancellation": {
+        "type": "object",
+        "required": [
+          "id",
+          "cancelReason"
+        ],
+        "properties": {
+          "cancelReason": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "CartInput": {
+        "type": "object",
+        "properties": {
+          "dishFlavor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dishId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "setmealId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          }
+        }
+      },
+      "CartLine": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "image",
+          "dishFlavor",
+          "number",
+          "amount"
+        ],
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "dishFlavor": {
+            "type": "string"
+          },
+          "dishId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "image": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "setmealId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          }
+        }
+      },
+      "CatalogCounts": {
+        "type": "object",
+        "required": [
+          "sold",
+          "discontinued"
+        ],
+        "properties": {
+          "discontinued": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sold": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "sort"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "type": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "updateTime": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "CategoryInput": {
+        "type": "object",
+        "required": [
+          "name",
+          "sort"
+        ],
+        "properties": {
+          "id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "CategoryPage": {
+        "type": "object",
+        "required": [
+          "total",
+          "records"
+        ],
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "Counts": {
+        "type": "object",
+        "required": [
+          "toBeConfirmed",
+          "confirmed",
+          "deliveryInProgress"
+        ],
+        "properties": {
+          "confirmed": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "deliveryInProgress": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "toBeConfirmed": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "CreateEmployeeOutcome": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiResult_CreatedEmployee"
+          },
+          {
+            "$ref": "#/components/schemas/ApiResult_NoData"
+          }
+        ]
+      },
+      "CreateEmployeeRequest": {
+        "type": "object",
+        "required": [
+          "username",
+          "name",
+          "employeeNo",
+          "phone",
+          "sex",
+          "idNumber",
+          "initialPassword"
+        ],
+        "properties": {
+          "employeeNo": {
+            "type": "string",
+            "description": "工号保留前导零，英文字母保存为大写。",
+            "example": "RS-0007",
+            "maxLength": 32,
+            "minLength": 1
+          },
+          "idNumber": {
+            "type": "string",
+            "example": "000000000000000000"
+          },
+          "initialPassword": {
+            "type": "string",
+            "format": "password",
+            "description": "由管理员设置，8 至 64 个字符。",
+            "maxLength": 64,
+            "minLength": 8
+          },
+          "name": {
+            "type": "string",
+            "example": "张三",
+            "maxLength": 12,
+            "minLength": 1
+          },
+          "phone": {
+            "type": "string",
+            "example": "13900000000"
+          },
+          "sex": {
+            "type": "string",
+            "description": "0 表示女，1 表示男。",
+            "example": "1"
+          },
+          "username": {
+            "type": "string",
+            "example": "zhangsan",
+            "maxLength": 20,
+            "minLength": 3
+          }
+        }
+      },
+      "CustomerLogin": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomerSession": {
+        "type": "object",
+        "required": [
+          "id",
+          "openid",
+          "token"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "openid": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "Dish": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "categoryId",
+          "price",
+          "image",
+          "description",
+          "status"
+        ],
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "categoryName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "image": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updateTime": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "DishDetails": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Dish"
+          },
+          {
+            "type": "object",
+            "required": [
+              "flavors"
+            ],
+            "properties": {
+              "flavors": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Flavor"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "DishInput": {
+        "type": "object",
+        "required": [
+          "name",
+          "categoryId",
+          "price",
+          "image"
+        ],
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": {
+            "type": "string"
+          },
+          "flavors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Flavor"
+            }
+          },
+          "id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "image": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "$ref": "#/components/schemas/Price"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DishPage": {
+        "type": "object",
+        "required": [
+          "total",
+          "records"
+        ],
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Dish"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "EditEmployeeRequest": {
+        "type": "object",
+        "required": [
+          "id",
+          "username",
+          "name",
+          "phone",
+          "sex",
+          "idNumber"
+        ],
+        "properties": {
+          "employeeNo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "idNumber": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "sex": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "EmployeeDetails": {
+        "type": "object",
+        "required": [
+          "id",
+          "username",
+          "name",
+          "phone",
+          "sex",
+          "idNumber",
+          "status"
+        ],
+        "properties": {
+          "employeeNo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "idNumber": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "sex": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "EmployeeListRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "username",
+          "phone",
+          "status"
+        ],
+        "properties": {
+          "employeeNo": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "旧员工尚未分配工号时为 null。"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "1 表示启用，0 表示禁用。"
+          },
+          "updateTime": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "格式为 YYYY-MM-DD HH:mm:ss，缺少时间时为 null。",
+            "example": "2026-11-11 09:30:00"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "EmployeePage": {
+        "type": "object",
+        "required": [
+          "total",
+          "records"
+        ],
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployeeListRow"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "Flavor": {
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "ImageUpload": {
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      },
+      "LoginOutcome": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiResult_LoginResponse"
+          },
+          {
+            "$ref": "#/components/schemas/ApiResult_NoData"
+          }
+        ]
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "properties": {
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "员工密码。调试时填写自己的本地密码，最多 1024 字节。",
+            "minLength": 1
+          },
+          "username": {
+            "type": "string",
+            "description": "用户名去掉首尾空白后应有 1–32 个字符。",
+            "example": "admin",
+            "minLength": 1
+          }
+        }
+      },
+      "MealDetails": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Setmeal"
+          },
+          {
+            "type": "object",
+            "required": [
+              "setmealDishes"
+            ],
+            "properties": {
+              "setmealDishes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/MealDish"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "MealDish": {
+        "type": "object",
+        "required": [
+          "dishId",
+          "name",
+          "price",
+          "copies"
+        ],
+        "properties": {
+          "copies": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dishId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "MealDishInput": {
+        "type": "object",
+        "required": [
+          "dishId",
+          "copies"
+        ],
+        "properties": {
+          "copies": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dishId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "MealInput": {
+        "type": "object",
+        "required": [
+          "name",
+          "categoryId",
+          "price",
+          "image",
+          "setmealDishes"
+        ],
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "image": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "$ref": "#/components/schemas/Price"
+          },
+          "setmealDishes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MealDishInput"
+            }
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "MealPage": {
+        "type": "object",
+        "required": [
+          "total",
+          "records"
+        ],
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Setmeal"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "MenuCategory": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "type",
+          "sort"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "MenuDish": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "categoryId",
+          "price",
+          "image",
+          "description",
+          "flavors"
+        ],
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": {
+            "type": "string"
+          },
+          "flavors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MenuFlavor"
+            }
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "image": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "MenuFlavor": {
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "MenuMealItem": {
+        "type": "object",
+        "required": [
+          "name",
+          "image",
+          "description",
+          "copies"
+        ],
+        "properties": {
+          "copies": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "MenuSetmeal": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "categoryId",
+          "price",
+          "image",
+          "description"
+        ],
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "image": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "MiniPayment": {
+        "type": "object",
+        "required": [
+          "timeStamp",
+          "nonceStr",
+          "packageStr",
+          "paySign",
+          "signType"
+        ],
+        "properties": {
+          "nonceStr": {
+            "type": "string"
+          },
+          "packageStr": {
+            "type": "string"
+          },
+          "paySign": {
+            "type": "string"
+          },
+          "signType": {
+            "type": "string"
+          },
+          "timeStamp": {
+            "type": "string"
+          }
+        }
+      },
+      "NoData": {
+        "type": "null"
+      },
+      "OrderId": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "OrderInput": {
+        "type": "object",
+        "required": [
+          "addressBookId"
+        ],
+        "properties": {
+          "addressBookId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "deliveryStatus": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estimatedDeliveryTime": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "payMethod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "remark": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tablewareNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tablewareStatus": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "OrderItem": {
+        "type": "object",
+        "required": [
+          "name",
+          "image",
+          "dishFlavor",
+          "number",
+          "amount"
+        ],
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "dishFlavor": {
+            "type": "string"
+          },
+          "dishId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "image": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "setmealId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          }
+        }
+      },
+      "OrderPage": {
+        "type": "object",
+        "required": [
+          "total",
+          "records"
+        ],
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderView"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "OrderReceipt": {
+        "type": "object",
+        "required": [
+          "id",
+          "orderNumber",
+          "orderAmount",
+          "orderTime"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orderAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "orderTime": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderView": {
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "status",
+          "payStatus",
+          "payMethod",
+          "amount",
+          "consignee",
+          "phone",
+          "address",
+          "remark",
+          "orderTime",
+          "cancelReason",
+          "rejectionReason",
+          "packAmount",
+          "orderDishes",
+          "orderDetailList"
+        ],
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "cancelReason": {
+            "type": "string"
+          },
+          "checkoutTime": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "consignee": {
+            "type": "string"
+          },
+          "deliveryTime": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "estimatedDeliveryTime": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "number": {
+            "type": "string"
+          },
+          "orderDetailList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "orderDishes": {
+            "type": "string"
+          },
+          "orderTime": {
+            "type": "string"
+          },
+          "packAmount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "payMethod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "payStatus": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "refundState": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "rejectionReason": {
+            "type": "string"
+          },
+          "remark": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Orders": {
+        "type": "object",
+        "required": [
+          "dateList",
+          "orderCountList",
+          "validOrderCountList",
+          "totalOrderCount",
+          "validOrderCount",
+          "orderCompletionRate"
+        ],
+        "properties": {
+          "dateList": {
+            "type": "string"
+          },
+          "orderCompletionRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "orderCountList": {
+            "type": "string"
+          },
+          "totalOrderCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "validOrderCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "validOrderCountList": {
+            "type": "string"
+          }
+        }
+      },
+      "Overview": {
+        "type": "object",
+        "required": [
+          "turnover",
+          "validOrderCount",
+          "orderCompletionRate",
+          "unitPrice",
+          "newUsers",
+          "totalUsers"
+        ],
+        "properties": {
+          "newUsers": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orderCompletionRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalUsers": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "turnover": {
+            "type": "number",
+            "format": "double"
+          },
+          "unitPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "validOrderCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PaymentInput": {
+        "type": "object",
+        "required": [
+          "orderNumber",
+          "payMethod"
+        ],
+        "properties": {
+          "orderNumber": {
+            "type": "string"
+          },
+          "payMethod": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PaymentResult": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "simulated"
+            ],
+            "properties": {
+              "simulated": {
+                "type": "boolean"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/MiniPayment"
+          }
+        ]
+      },
+      "PaymentStatus": {
+        "type": "object",
+        "required": [
+          "payStatus"
+        ],
+        "properties": {
+          "payStatus": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Price": {
+        "oneOf": [
+          {
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "Rejection": {
+        "type": "object",
+        "required": [
+          "id",
+          "rejectionReason"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rejectionReason": {
+            "type": "string"
+          }
+        }
+      },
+      "Setmeal": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "categoryId",
+          "price",
+          "image",
+          "description",
+          "status"
+        ],
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "categoryName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "image": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updateTime": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "Top": {
+        "type": "object",
+        "required": [
+          "nameList",
+          "numberList",
+          "names",
+          "quantities"
+        ],
+        "properties": {
+          "nameList": {
+            "type": "string"
+          },
+          "names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numberList": {
+            "type": "string"
+          },
+          "quantities": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "Turnover": {
+        "type": "object",
+        "required": [
+          "dateList",
+          "turnoverList"
+        ],
+        "properties": {
+          "dateList": {
+            "type": "string"
+          },
+          "turnoverList": {
+            "type": "string"
+          }
+        }
+      },
+      "Users": {
+        "type": "object",
+        "required": [
+          "dateList",
+          "totalUserList",
+          "newUserList"
+        ],
+        "properties": {
+          "dateList": {
+            "type": "string"
+          },
+          "newUserList": {
+            "type": "string"
+          },
+          "totalUserList": {
+            "type": "string"
+          }
+        }
+      },
+      "WorkspaceOrders": {
+        "type": "object",
+        "required": [
+          "waitingOrders",
+          "deliveredOrders",
+          "completedOrders",
+          "cancelledOrders",
+          "allOrders"
+        ],
+        "properties": {
+          "allOrders": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "cancelledOrders": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "completedOrders": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "deliveredOrders": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "waitingOrders": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "CustomerToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "authentication",
+        "description": "填写用户登录响应中的 data.token。"
+      },
+      "EmployeeToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "token",
+        "description": "填写登录响应中的 data.token，直接粘贴 JWT 字符串。"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "员工",
+      "description": "管理端员工和登录"
+    },
+    {
+      "name": "分类",
+      "description": "菜品和套餐分类"
+    },
+    {
+      "name": "菜品",
+      "description": "菜品、口味和图片"
+    },
+    {
+      "name": "套餐",
+      "description": "套餐和关联菜品"
+    },
+    {
+      "name": "店铺",
+      "description": "营业状态"
+    },
+    {
+      "name": "菜单",
+      "description": "用户端浏览菜单"
+    },
+    {
+      "name": "用户",
+      "description": "小程序用户登录"
+    },
+    {
+      "name": "地址簿",
+      "description": "用户收货地址"
+    },
+    {
+      "name": "购物车",
+      "description": "用户购物车"
+    },
+    {
+      "name": "订单",
+      "description": "用户下单和订单管理"
+    },
+    {
+      "name": "统计",
+      "description": "工作台、营业统计和 Excel 导出"
+    },
+    {
+      "name": "运行状态",
+      "description": "本地 HTTP 健康检查"
+    }
+  ]
+}
